@@ -98,7 +98,7 @@ public class JsonHiveSchema  {
     while (keys.hasNext()) {
       String k = keys.next();
       sb.append("  ");
-      sb.append(k.toString());
+      sb.append(escapedKey(k));
       sb.append(' ');
       sb.append(valueToHiveSchema(jo.opt(k)));
       sb.append(',').append("\n");
@@ -106,6 +106,10 @@ public class JsonHiveSchema  {
 
     sb.replace(sb.length() - 2, sb.length(), ")\n"); // remove last comma
     return sb.append("ROW FORMAT SERDE 'org.openx.data.jsonserde.JsonSerDe';").toString();
+  }
+
+  private String escapedKey(String key) {
+    return '`' + key.toString() + '`';
   }
 
   private String toHiveSchema(JSONObject o) throws JSONException {
@@ -116,7 +120,7 @@ public class JsonHiveSchema  {
 
     while (keys.hasNext()) {
       String k = keys.next();
-      sb.append(k.toString());
+      sb.append(escapedKey(k));
       sb.append(':');
       sb.append(valueToHiveSchema(o.opt(k)));
       sb.append(", ");
